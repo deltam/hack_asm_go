@@ -1,7 +1,7 @@
 (LOOP)
 @100
-DM=D+1
+MD=D+1
 @LOOP   // comment
   D;JGT
 @200
-DM = D+1;JLT
+MD = D+1;JLT
