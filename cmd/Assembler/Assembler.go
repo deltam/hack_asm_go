@@ -31,7 +31,7 @@ func main() {
 	for ; parser.HasMoreCommands(); parser.Advance() {
 		//		fmt.Println(parser.CurrentCommand())
 		if parser.CommandType() == asm.A_COMMAND {
-			address, err := symbols.GetAddress(parser.Symbol())
+			address := symbols.GetAddress(parser.Symbol())
 			if err == nil {
 				fmt.Println(address)
 			} else {

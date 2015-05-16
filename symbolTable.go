@@ -6,11 +6,12 @@ import (
 )
 
 type SymbolTable struct {
-	address map[string]int16
+	address       map[string]int
+	variableCount int
 }
 
 func NewSymbolTable() *SymbolTable {
-	table := make(map[string]int16)
+	table := make(map[string]int)
 
 	// default
 	table["SP"] = 0
@@ -21,26 +22,34 @@ func NewSymbolTable() *SymbolTable {
 	table["SCREEN"] = 16384
 	table["KBD"] = 24576
 	for i := 0; i < 16; i++ {
-		table[fmt.Sprintf("R%d", i)] = int16(i)
+		table[fmt.Sprintf("R%d", i)] = i
 	}
 
 	return &SymbolTable{
-		address: table,
+		address:       table,
+		variableCount: 16,
 	}
 }
 
-// シンボル：アドレスのテーブルを作る
+// シンボル->アドレスのテーブルを作る
 func (table *SymbolTable) MakeTable(parser Parser) {
+	var symbolCount = 0
 	for ; parser.HasMoreCommands(); parser.Advance() {
 		if parser.CommandType() == L_COMMAND && !table.Contains(parser.Symbol()) {
-			table.AddEntry(parser.Symbol(), int16(parser.CurrentLine()))
+			table.AddEntry(parser.Symbol(), parser.CurrentLine()-symbolCount)
+			symbolCount++
 		}
 	}
 	parser.Reset()
 }
 
-func (table *SymbolTable) AddEntry(symbol string, address int16) {
+func (table *SymbolTable) AddEntry(symbol string, address int) {
 	table.address[symbol] = address
+}
+
+func (table *SymbolTable) AddVariable(symbol string) {
+	table.address[symbol] = table.variableCount
+	table.variableCount++
 }
 
 func (table SymbolTable) Contains(symbol string) bool {
@@ -48,13 +57,19 @@ func (table SymbolTable) Contains(symbol string) bool {
 	return contain
 }
 
-func (table SymbolTable) GetAddress(symbol string) (string, error) {
+func (table *SymbolTable) GetAddress(symbol string) string {
+	var val int
 	if table.Contains(symbol) {
-		val, _ := table.address[symbol]
-		address := fmt.Sprintf("0%015d", val)
-		return address, nil
+		val, _ = table.address[symbol]
 	} else {
-		address, err := strconv.ParseInt(symbol, 10, 16)
-		return fmt.Sprintf("0%015b", address), err
+		_, err := strconv.ParseInt(symbol, 10, 16)
+		if err != nil {
+			table.AddVariable(symbol)
+			val, _ = table.address[symbol]
+		} else {
+			tmp, _ := strconv.ParseInt(symbol, 10, 16)
+			val = int(tmp)
+		}
 	}
+	return fmt.Sprintf("0%015b", val)
 }
