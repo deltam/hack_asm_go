@@ -2,8 +2,6 @@ package hack_asm_go
 
 import (
 	"bufio"
-	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -47,6 +45,16 @@ func (parser Parser) HasMoreCommands() bool {
 // 現在のコマンドをひとつ進める
 func (parser *Parser) Advance() {
 	parser.current++
+}
+
+// 現在のコマンド位置を最初に戻す
+func (parser *Parser) Reset() {
+	parser.current = 0
+}
+
+// 現在のコマンド位置を返す
+func (parser Parser) CurrentLine() int {
+	return parser.current
 }
 
 // 現在のコマンド文字列を返す
@@ -108,10 +116,4 @@ func (parser Parser) Comp() string {
 func (parser Parser) Jump() string {
 	tokens := parser.split(parser.CurrentCommand())
 	return tokens[2]
-}
-
-// A命令のバイナリ表現を返す
-func (parser Parser) Address() (string, error) {
-	adrs, err := strconv.ParseInt(parser.Symbol(), 10, 16)
-	return fmt.Sprintf("0%015b", adrs), err
 }

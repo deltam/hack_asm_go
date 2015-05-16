@@ -24,12 +24,16 @@ func main() {
 	scanner := bufio.NewScanner(fp)
 	parser := asm.NewParser(scanner)
 
+	symbols := asm.NewSymbolTable()
+	symbols.MakeTable(*parser)
+
 	// コマンド処理
 	for ; parser.HasMoreCommands(); parser.Advance() {
-		if parser.CommandType() == asm.A_COMMAND || parser.CommandType() == asm.L_COMMAND {
-			adrs, err := parser.Address()
+		//		fmt.Println(parser.CurrentCommand())
+		if parser.CommandType() == asm.A_COMMAND {
+			address, err := symbols.GetAddress(parser.Symbol())
 			if err == nil {
-				fmt.Println(adrs)
+				fmt.Println(address)
 			} else {
 				panic("error address")
 			}
