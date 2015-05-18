@@ -23,8 +23,9 @@ func NewParser(scanner *bufio.Scanner) *Parser {
 	var text string
 	for scanner.Scan() {
 		text = scanner.Text()
-		text = strings.Replace(text, " ", "", -1) // remove space
-		text = strings.Split(text, "//")[0]       // remove comment
+		text = strings.Replace(text, " ", "", -1)  // remove space
+		text = strings.Replace(text, "\t", "", -1) // remove tab
+		text = strings.Split(text, "//")[0]        // remove comment
 		if text != "" {
 			src = append(src, text)
 			lines++
@@ -88,7 +89,8 @@ func (parser Parser) Symbol() string {
 // tokens[0] = cmp
 // tokens[1] = dest
 // tokens[2] = jmp
-func (parser Parser) split(command string) [3]string {
+func (parser Parser) split() [3]string {
+	var command string = parser.CurrentCommand()
 	var tokens [3]string
 	if strings.Index(command, "=") != -1 {
 		tokens[1] = strings.Split(command, "=")[0]
@@ -104,16 +106,16 @@ func (parser Parser) split(command string) [3]string {
 }
 
 func (parser Parser) Dest() string {
-	tokens := parser.split(parser.CurrentCommand())
+	tokens := parser.split()
 	return tokens[1]
 }
 
 func (parser Parser) Comp() string {
-	tokens := parser.split(parser.CurrentCommand())
+	tokens := parser.split()
 	return tokens[0]
 }
 
 func (parser Parser) Jump() string {
-	tokens := parser.split(parser.CurrentCommand())
+	tokens := parser.split()
 	return tokens[2]
 }
