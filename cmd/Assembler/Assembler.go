@@ -24,8 +24,8 @@ func main() {
 			outfp = os.Stdout
 		} else {
 			// output to file
-			name := strings.Split(os.Args[1], "/")
-			outfile := strings.TrimRight(name[len(name)-1], "asm") + "hack"
+			fInfo, _ := fp.Stat()
+			outfile := strings.TrimRight(fInfo.Name(), ".asm") + ".hack"
 			outfp, err = os.Create(outfile)
 			if err != nil {
 				panic(err)
