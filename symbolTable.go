@@ -40,7 +40,6 @@ func (table *SymbolTable) MakeTable(parser Parser) {
 			symbolCount++
 		}
 	}
-	parser.Reset()
 }
 
 func (table *SymbolTable) AddEntry(symbol string, address int) {
