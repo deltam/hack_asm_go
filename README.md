@@ -8,7 +8,7 @@ Assembler for HackComputer(nand2tetris.org) written by Go
 # generate ./sample.hack
 go run /cmd/Assembler/Assembler.go _asm/sample.asm
 # output STDOUT
-go run /cmd/Assembler/Assembler.go _asm/sample.asm -s
+go run /cmd/Assembler/Assembler.go -s _asm/sample.asm
 ```
 
 ## My Nand2Tetris Project
