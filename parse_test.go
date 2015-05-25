@@ -8,13 +8,13 @@ import (
 
 func TestNewParser(t *testing.T) {
 	var code string
-	code = "(START)\n"
-	code += "  @10\n"
-	code += "\tM=D\n"
-	code += "D=1  // hogehoge \n"
-	code += "@START\n"
-	code += "D;JGT\n"
-
+	code = `(START)
+  @10
+	M=D
+D=1  // hogehoge
+@START
+D;JGT
+`
 	codeReader := strings.NewReader(code)
 	scanner := bufio.NewScanner(codeReader)
 
