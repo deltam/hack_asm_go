@@ -2,25 +2,43 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	asm "github.com/deltam/hack_asm_go"
 	"os"
 	"strings"
 )
 
+func usage() {
+	fmt.Fprintln(os.Stderr, `
+Usage:
+  Assembler [-s] Prog.asm
+
+Flags:`)
+	flag.PrintDefaults()
+}
+
 func main() {
 	var fp *os.File
 	var outfp *os.File
 	var err error
 
-	if len(os.Args) == 2 || len(os.Args) == 3 {
-		fp, err = os.Open(os.Args[1])
+	// command line option
+	var s = flag.Bool("s", false, "Output to STDOUT")
+	flag.Parse()
+	// args
+	var args = flag.Args()
+	// custom usage
+	flag.Usage = usage
+
+	if flag.NArg() == 1 {
+		fp, err = os.Open(args[0])
 		if err != nil {
 			panic(err)
 		}
 		defer fp.Close()
 		// output to stdout
-		if len(os.Args) == 3 && os.Args[2] == "-s" {
+		if *s {
 			outfp = os.Stdout
 		} else {
 			// output to file
@@ -33,7 +51,7 @@ func main() {
 			defer outfp.Close()
 		}
 	} else {
-		fmt.Println("Usage: Assembler Prog.asm [-s]\n" + "-s output to STDOUT")
+		flag.Usage()
 		os.Exit(1)
 	}
 
