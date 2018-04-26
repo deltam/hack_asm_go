@@ -1,6 +1,6 @@
 # hack_asm_go
 
-Assembler for HackComputer(nand2tetris.org) written by Go
+Assembler for HackComputer(nand2tetris.org) written in Go
 
 ## Usage
 
